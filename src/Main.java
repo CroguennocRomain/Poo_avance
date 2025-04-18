@@ -1,57 +1,46 @@
-import java.io.File;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.*;
 
 public class Main {
-
     public static void main(String[] args) {
-        // Vérification des arguments
+        args = new String[] {"TestsFiles", "bonjor", ".txt"};
         if (args.length < 2) {
-            System.out.println("Usage: java Main <dossier> <mot-clé>");
-            System.exit(1);
-        }
-
-        String directoryPath = args[0];
-        String keyword = args[1];
-
-        File folder = new File(directoryPath);
-        if (!folder.exists() || !folder.isDirectory()) {
-            System.err.println("Le chemin spécifié n'est pas un dossier valide.");
-            System.exit(1);
-        }
-
-        // Liste des fichiers à traiter
-        File[] files = folder.listFiles((dir, name) -> name.endsWith(".txt"));
-        if (files == null || files.length == 0) {
-            System.out.println("Aucun fichier texte trouvé dans le dossier.");
+            System.out.println("Usage: java Main <directory> <search_term> [extension]");
             return;
         }
 
-        // Création du pool de threads
-        int numThreads = Runtime.getRuntime().availableProcessors();
-        ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+        String directoryPath = args[0];
+        String searchTerm = args[1];
+        String extensionFilter = args.length > 2 ? args[2] : null;
 
-        try {
-            // Lancer une tâche par fichier
-            for (File file : files) {
-                SearchTask task = new SearchTask(file, keyword);
-                Future<List<SearchResult>> future = executor.submit(task);
+        SearchManager searchManager = new SearchManager();
+        List<SearchResult> results = searchManager.searchInDirectory(directoryPath, searchTerm, extensionFilter);
 
-                // Traitement des résultats (on pourrait les accumuler pour affichage global)
-                List<SearchResult> results = future.get();
-                for (SearchResult result : results) {
-                    System.out.printf("[%s] Ligne %d : %s%n",
-                            result.getFileName(),
-                            result.getLineNumber(),
-                            result.getLineContent());
+        if (results.isEmpty()) {
+            System.out.println("Aucun résultat trouvé.");
+            return;
+        }
+
+        // Organiser les résultats par fichier
+        Map<String, List<SearchResult>> resultsByFile = new HashMap<>();
+        for (SearchResult result : results) {
+            resultsByFile.computeIfAbsent(result.getFilePath(), k -> new ArrayList<>()).add(result);
+        }
+
+        System.out.printf("Terme \"%s\" trouvé %d fois dans %d fichier(s) :\n\n",
+                searchTerm, results.size(), resultsByFile.size());
+
+        for (String filePath : resultsByFile.keySet()) {
+            List<SearchResult> fileResults = resultsByFile.get(filePath);
+            System.out.printf("- %s : %d occurrence(s)\n", filePath, fileResults.size());
+            for (SearchResult res : fileResults) {
+                if (res.isApproximate()) {
+                    System.out.printf("    → ligne %d (≈) : %s\n", res.getLineNumber(), res.getLineContent());
+                } else {
+                    System.out.printf("    → ligne %d (✔) : %s\n", res.getLineNumber(), res.getLineContent());
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            executor.shutdown();
+
+            System.out.println();
         }
     }
 }

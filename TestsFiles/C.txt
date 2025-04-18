@@ -1,0 +1,5 @@
+Ceci est un fichier contenant du texte aléatoire. Il peut être utilisé pour des tests de lecture ligne par ligne.
+On veut tester la capacité du programme à identifier un mot spécifique dans un grand ensemble de données.
+C’est une belle journée pour coder, prendre un café, et dire bonjour à son voisin.
+Peut-être qu'on ajoutera plus de lignes plus tard pour complexifier les choses.
+Chaque ligne ici est construite pour simuler un paragraphe ou un contenu potentiellement réaliste.

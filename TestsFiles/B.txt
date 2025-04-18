@@ -1,0 +1,5 @@
+Ce fichier ne contient pas le mot-clé qu'on recherche. Il est juste là pour vérifier que le programme ne retourne rien.
+La météo est agréable aujourd’hui, et les oiseaux chantent.
+Ce type de fichier est important pour s'assurer que les faux positifs n'apparaissent pas.
+Il faut toujours tester les cas où la donnée n’est pas présente pour éviter des erreurs de logique.
+Encore une ligne de texte, sans mot particulier, juste du remplissage utile.
