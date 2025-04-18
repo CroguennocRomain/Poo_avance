@@ -4,11 +4,13 @@ public class SearchResult {
     private final String filePath;
     private final int lineNumber;
     private final String lineContent;
+    private final boolean isApproximate;
 
-    public SearchResult(String filePath, int lineNumber, String lineContent) {
+    public SearchResult(String filePath, int lineNumber, String lineContent, boolean isApproximate) {
         this.filePath = filePath;
         this.lineNumber = lineNumber;
         this.lineContent = lineContent;
+        this.isApproximate = isApproximate;
     }
 
     public String getFilePath() {
@@ -21,5 +23,9 @@ public class SearchResult {
 
     public String getLineContent() {
         return lineContent;
+    }
+
+    public boolean isApproximate() {
+        return isApproximate;
     }
 }

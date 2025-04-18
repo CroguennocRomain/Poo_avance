@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        args = new String[] {"TestsFiles", "bonjour", ".txt"};
+        args = new String[] {"TestsFiles", "bonjor", ".txt"};
         if (args.length < 2) {
             System.out.println("Usage: java Main <directory> <search_term> [extension]");
             return;
@@ -35,8 +35,13 @@ public class Main {
             List<SearchResult> fileResults = resultsByFile.get(filePath);
             System.out.printf("- %s : %d occurrence(s)\n", filePath, fileResults.size());
             for (SearchResult res : fileResults) {
-                System.out.printf("    → ligne %d : %s\n", res.getLineNumber(), res.getLineContent());
+                if (res.isApproximate()) {
+                    System.out.printf("    → ligne %d (≈) : %s\n", res.getLineNumber(), res.getLineContent());
+                } else {
+                    System.out.printf("    → ligne %d (✔) : %s\n", res.getLineNumber(), res.getLineContent());
+                }
             }
+
             System.out.println();
         }
     }
